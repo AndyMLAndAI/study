@@ -5,6 +5,18 @@ import json
 import shutil
 import glob
 
+def normalize_target_name(readable, suffix):
+    base = os.path.splitext(readable)[0]
+    # Normalize Xcode test attachment names like 01-main_0_B079D614...
+    if base.startswith("01-main"):
+        base = "01-main"
+    elif base.startswith("02-live-activity"):
+        base = "02-live-activity"
+
+    if suffix and not base.endswith(suffix):
+        return f"{base}-{suffix}.png"
+    return f"{base}.png"
+
 def extract(manifest_dir, output_dir, suffix):
     os.makedirs(output_dir, exist_ok=True)
     manifest_file = os.path.join(manifest_dir, "manifest.json")
@@ -33,12 +45,7 @@ def extract(manifest_dir, output_dir, suffix):
                 if not exp_name:
                     continue
                 readable = att.get("suggestedHumanReadableName") or att.get("name") or exp_name
-                base_name = os.path.splitext(readable)[0]
-                # If base_name already contains the suffix, keep it as is; otherwise append
-                if suffix and not base_name.endswith(suffix):
-                    target_filename = f"{base_name}-{suffix}.png"
-                else:
-                    target_filename = f"{base_name}.png"
+                target_filename = normalize_target_name(readable, suffix)
 
                 src_path = os.path.join(manifest_dir, exp_name)
                 dst_path = os.path.join(output_dir, target_filename)
@@ -47,7 +54,7 @@ def extract(manifest_dir, output_dir, suffix):
                     print(f"Extracted: {src_path} -> {dst_path}")
                     handled = True
         except Exception as e:
-            print(f"Warning: Manifest parsing encountered error: {e}")
+            print(f"Warning: Manifest parsing error: {e}")
 
     if not handled:
         # Fallback to scanning any PNG files in the directory
