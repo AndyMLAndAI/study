@@ -7,22 +7,25 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 24) {
             Text("Study")
-                .font(.system(size: 34, weight: .semibold))
-                .foregroundStyle(Color(red: 0.114, green: 0.114, blue: 0.122)) // carbon #1D1D1F
+                .font(.system(.largeTitle, weight: .semibold))
+                .foregroundStyle(Color.appCarbon)
 
             Button(action: startFocus) {
                 Text("Start Focus")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(Color(red: 0.957, green: 0.973, blue: 0.984)) // #F4F8FB
+                    .font(.system(.body, weight: .semibold))
+                    .foregroundStyle(Color.appWash)
                     .padding(.horizontal, 24)
-                    .frame(height: 56)
-                    .background(Color(red: 0.0, green: 0.443, blue: 0.890)) // appleBlue #0071E3
+                    .frame(minHeight: 44, idealHeight: 56)
+                    .background(Color.appleBlue)
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 0.961, green: 0.961, blue: 0.969)) // canvas #F5F5F7
+        .background(Color.appCanvas)
+        .onAppear {
+            ScreenshotMode.configureIfActive()
+        }
     }
 
     private func startFocus() {

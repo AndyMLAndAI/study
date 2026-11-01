@@ -1,0 +1,114 @@
+name: Automated Screenshots
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    runs-on: xcode-27
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
+      - name: Boot iPhone 17 Simulator
+        run: |
+          echo "Booting iPhone 17 simulator..."
+          xcrun simctl boot "iPhone 17" || true
+          xcrun simctl bootstatus "iPhone 17" -b
+          mkdir -p screenshots
+
+      - name: Capture Light Appearance Screenshots
+        run: |
+          echo "Setting appearance to Light..."
+          xcrun simctl ui booted appearance light
+          xcrun simctl ui booted content_size standard
+          
+          xcodebuild test \
+            -project Study.xcodeproj \
+            -scheme StudyUITests \
+            -destination "platform=iOS Simulator,name=iPhone 17" \
+            -resultBundlePath Result-light.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" || true
+            
+          mkdir -p attachments-light
+          xcrun xcresulttool export attachments --path Result-light.xcresult --output-path ./attachments-light || true
+          python3 scripts/extract_screenshots.py ./attachments-light screenshots light
+
+      - name: Capture Dark Appearance Screenshots
+        run: |
+          echo "Setting appearance to Dark..."
+          xcrun simctl ui booted appearance dark
+          xcrun simctl ui booted content_size standard
+          
+          xcodebuild test \
+            -project Study.xcodeproj \
+            -scheme StudyUITests \
+            -destination "platform=iOS Simulator,name=iPhone 17" \
+            -resultBundlePath Result-dark.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" || true
+            
+          mkdir -p attachments-dark
+          xcrun xcresulttool export attachments --path Result-dark.xcresult --output-path ./attachments-dark || true
+          python3 scripts/extract_screenshots.py ./attachments-dark screenshots dark
+
+      - name: Capture AX5 Accessibility Screenshots
+        run: |
+          echo "Setting appearance to Light with AX5 content size..."
+          xcrun simctl ui booted appearance light
+          xcrun simctl ui booted content_size accessibility-extra-extra-extra-large
+          
+          xcodebuild test \
+            -project Study.xcodeproj \
+            -scheme StudyUITests \
+            -only-testing:StudyUITests/ScreenshotUITests/testCaptureMainScreen \
+            -destination "platform=iOS Simulator,name=iPhone 17" \
+            -resultBundlePath Result-ax5.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" || true
+            
+          mkdir -p attachments-ax5
+          xcrun xcresulttool export attachments --path Result-ax5.xcresult --output-path ./attachments-ax5 || true
+          python3 scripts/extract_screenshots.py ./attachments-ax5 screenshots ax5
+          
+          # Reset content size to standard
+          xcrun simctl ui booted content_size standard
+
+      - name: Attempt Live Activity Capture (VERIFY-ON-CI)
+        run: |
+          echo "Checking for Live Activity screenshot (VERIFY-ON-CI)..."
+          if [ -f screenshots/02-live-activity-light.png ]; then
+            cp screenshots/02-live-activity-light.png screenshots/02-live-activity.png
+          elif [ ! -f screenshots/02-live-activity.png ]; then
+            echo "Attempting simctl Live Activity snapshot..."
+            xcrun simctl launch booted com.andyml.study --screenshot-mode || true
+            sleep 2
+            xcrun simctl openurl booted "study://focus" || true
+            sleep 2
+            xcrun simctl io booted screenshot screenshots/02-live-activity.png || echo "simctl snapshot skipped"
+          fi
+        continue-on-error: true
+
+      - name: Verify Screenshots Captured
+        run: |
+          echo "Captured screenshots:"
+          ls -la screenshots/
+
+      - name: Upload Screenshots Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Study-screenshots
+          path: screenshots/
+          retention-days: 7

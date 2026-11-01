@@ -23,6 +23,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.andyml.study
         INFOPLIST_FILE: Study/Info.plist
+    scheme:
+      testTargets:
+        - StudyTests
     dependencies:
       - target: StudyWidgets
         embed: true
@@ -49,5 +52,22 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.andyml.study.tests
         INFOPLIST_FILE: StudyTests/Info.plist
+    dependencies:
+      - target: Study
+
+  StudyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "27.0"
+    sources:
+      - StudyUITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.andyml.study.uitests
+        INFOPLIST_FILE: StudyUITests/Info.plist
+        TEST_TARGET_NAME: Study
+    scheme:
+      testTargets:
+        - StudyUITests
     dependencies:
       - target: Study
