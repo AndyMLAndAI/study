@@ -40,5 +40,7 @@ targets:
     deploymentTarget: "27.0"
     sources:
       - StudyTests
+    info:
+      path: StudyTests/Info.plist
     dependencies:
       - target: Study

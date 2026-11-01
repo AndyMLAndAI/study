@@ -4,8 +4,14 @@
 <dict>
     <key>CFBundleDisplayName</key>
     <string>StudyWidgets</string>
+    <key>CFBundleName</key>
+    <string>StudyWidgets</string>
     <key>CFBundleIdentifier</key>
     <string>com.andyml.study.widgets</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>XPC!</string>
     <key>CFBundleShortVersionString</key>
     <string>1.0.0</string>
     <key>CFBundleVersion</key>

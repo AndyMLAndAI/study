@@ -37,14 +37,7 @@ jobs:
           xcodebuild test \
             -project Study.xcodeproj \
             -scheme Study \
-            -destination "platform=iOS Simulator,name=iPhone 17,OS=27.0" \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" || \
-          xcodebuild test \
-            -project Study.xcodeproj \
-            -scheme Study \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+            -destination "platform=iOS Simulator,name=iPhone 17" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
