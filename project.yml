@@ -1,0 +1,63 @@
+name: Study
+options:
+  bundleIdPrefix: com.andyml
+  deploymentTarget:
+    iOS: "27.0"
+  xcodeVersion: "27.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "27.0"
+    TARGETED_DEVICE_FAMILY: "1" # iPhone only
+    CODE_SIGNING_ALLOWED: NO
+    CODE_SIGNING_REQUIRED: NO
+    CODE_SIGN_IDENTITY: ""
+
+targets:
+  Study:
+    type: application
+    platform: iOS
+    deploymentTarget: "27.0"
+    sources:
+      - path: Study
+    info:
+      plist:
+        CFBundleDisplayName: Study
+        CFBundleName: Study
+        CFBundleIdentifier: com.andyml.study
+        CFBundleURLTypes:
+          - CFBundleURLName: com.andyml.study.focus
+            CFBundleURLSchemes:
+              - study
+        NSSupportsLiveActivities: true
+        CADisableMinimumFrameDurationOnPhone: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UILaunchScreen: {}
+    dependencies:
+      - target: StudyWidgets
+
+  StudyWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "27.0"
+    sources:
+      - path: StudyWidgets
+      - path: Study/Core/Models/FocusActivityAttributes.swift
+    info:
+      plist:
+        CFBundleDisplayName: StudyWidgets
+        CFBundleIdentifier: com.andyml.study.widgets
+        NSSupportsLiveActivities: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+
+  StudyTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "27.0"
+    sources:
+      - path: StudyTests
+    dependencies:
+      - target: Study
