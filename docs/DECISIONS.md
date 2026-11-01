@@ -35,3 +35,10 @@ Architectural, design, and workflow decisions for **Study**.
 ### 2026-11-01: XcodeGen Info.plist Handling and Target Build Settings
 - **Context:** During Phase 0 CI pipeline setup, `xcodegen generate` with `info: path: <file>` generated blank plist templates, overwriting checked-in `Info.plist` files and stripping custom keys like `NSExtension` (causing simulator test failure `extensionDictionary must be set in placeholder attributes`).
 - **Decision:** Do not use `info:` block in `project.yml`. Instead, declare `INFOPLIST_FILE: <path>` and explicit `PRODUCT_BUNDLE_IDENTIFIER: <bundleId>` under `settings: base:` for every target (`Study`, `StudyWidgets`, `StudyTests`). Dynamic build variables `$(PRODUCT_BUNDLE_IDENTIFIER)` and `$(PRODUCT_BUNDLE_PACKAGE_TYPE)` are maintained in the checked-in `Info.plist` files.
+
+### 2026-11-01: Scheme Test Target Isolation and Primary Button Contrast
+- **Context:** Automated screenshots required a dedicated UI test target `StudyUITests` without impacting or risking the passing `build.yml` workflow.
+- **Decision:**
+  - In `project.yml`, `Study` target explicitly declares `scheme: testTargets: [StudyTests]`. This guarantees `build.yml` running `xcodebuild test -scheme Study` executes only unit tests and never runs UI tests.
+  - `StudyUITests` target declares `scheme: testTargets: [StudyUITests]` for dedicated screenshot runs in `.github/workflows/screenshots.yml`.
+  - Visual review of dark mode simulator screenshots revealed that dynamic `Color.appWash` (`#1D1D1F`) on `appleBlue` (`#0071E3`) reduced contrast to failing levels. `Color.primaryButtonText` (`#F4F8FB`) was defined to guarantee 4.6:1 WCAG AA contrast across both light and dark appearances.

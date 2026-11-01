@@ -13,7 +13,7 @@ struct ContentView: View {
             Button(action: startFocus) {
                 Text("Start Focus")
                     .font(.system(.body, weight: .semibold))
-                    .foregroundStyle(Color.appWash)
+                    .foregroundStyle(Color.primaryButtonText)
                     .padding(.horizontal, 24)
                     .frame(minHeight: 44, idealHeight: 56)
                     .background(Color.appleBlue)

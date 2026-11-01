@@ -59,4 +59,7 @@ public extension Color {
             ? UIColor(red: 0xFF / 255.0, green: 0x45 / 255.0, blue: 0x3A / 255.0, alpha: 1.0)
             : UIColor(red: 0xD7 / 255.0, green: 0x00 / 255.0, blue: 0x15 / 255.0, alpha: 1.0)
     })
+
+    /// Fixed high-contrast text for filled appleBlue buttons in both appearances
+    static let primaryButtonText = Color(red: 0xF4 / 255.0, green: 0xF8 / 255.0, blue: 0xFB / 255.0)
 }
