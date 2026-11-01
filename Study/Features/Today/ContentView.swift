@@ -28,12 +28,6 @@ struct ContentView: View {
     private func startFocus() {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
 
-        for activity in Activity<FocusActivityAttributes>.activities {
-            Task {
-                await activity.end(nil, dismissalPolicy: .immediate)
-            }
-        }
-
         let attributes = FocusActivityAttributes(
             subjectName: "Sample",
             plannedSeconds: 1500
@@ -45,14 +39,13 @@ struct ContentView: View {
         )
 
         do {
-            let activity = try Activity.request(
+            _ = try Activity.request(
                 attributes: attributes,
                 content: .init(state: initialContentState, staleDate: nil),
                 pushType: nil
             )
-            currentActivity = activity
         } catch {
-            // VERIFY-ON-CI: Fallback or error logging
+            // VERIFY-ON-CI: Activity request fallback
         }
     }
 }
