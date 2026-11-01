@@ -17,17 +17,20 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "27.0"
+    bundleId: com.andyml.study
     sources:
       - Study
     info:
       path: Study/Info.plist
     dependencies:
       - target: StudyWidgets
+        embed: true
 
   StudyWidgets:
     type: app-extension
     platform: iOS
     deploymentTarget: "27.0"
+    bundleId: com.andyml.study.widgets
     sources:
       - StudyWidgets
       - Study/Core/Models/FocusActivityAttributes.swift
@@ -38,6 +41,7 @@ targets:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: "27.0"
+    bundleId: com.andyml.study.tests
     sources:
       - StudyTests
     info:
