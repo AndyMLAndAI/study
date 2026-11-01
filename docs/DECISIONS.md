@@ -31,3 +31,7 @@ Architectural, design, and workflow decisions for **Study**.
 - **Subject Dots:** 10 pt system circle dots represent the only chromatic element outside of the blue system, used strictly for identification.
 - **Today's Chart Bar:** Rendered in `appleBlue` as an active/selected state; past bars use neutral `pebble`.
 - **Semantic Feedback:** `success` and `error` colors are strictly limited to feedback glyphs and text, never applied to buttons, fills, or borders.
+
+### 2026-11-01: XcodeGen Info.plist Handling and Target Build Settings
+- **Context:** During Phase 0 CI pipeline setup, `xcodegen generate` with `info: path: <file>` generated blank plist templates, overwriting checked-in `Info.plist` files and stripping custom keys like `NSExtension` (causing simulator test failure `extensionDictionary must be set in placeholder attributes`).
+- **Decision:** Do not use `info:` block in `project.yml`. Instead, declare `INFOPLIST_FILE: <path>` and explicit `PRODUCT_BUNDLE_IDENTIFIER: <bundleId>` under `settings: base:` for every target (`Study`, `StudyWidgets`, `StudyTests`). Dynamic build variables `$(PRODUCT_BUNDLE_IDENTIFIER)` and `$(PRODUCT_BUNDLE_PACKAGE_TYPE)` are maintained in the checked-in `Info.plist` files.
