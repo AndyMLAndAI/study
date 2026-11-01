@@ -4,4 +4,4 @@ Log of the last 10 GitHub Actions CI runs for **Study**.
 
 | Date | Commit SHA | Result | First Error / Notes |
 |---|---|---|---|
-| 2026-11-01 | Initial | Pending | Awaiting GitHub authentication and initial push |
+| 2026-11-01 | 52b172d | FAIL | `xcodegen generate`: Decoding failed at "path": Nothing found (fixed: added explicit Info.plist files and info.path) |
